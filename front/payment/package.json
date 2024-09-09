@@ -1,0 +1,31 @@
+{
+  "name": "payment",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "vue-cli-service serve --port 3000",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.627.0",
+    "@mdi/font": "^7.4.47",
+    "aws-sdk": "^2.1671.0",
+    "axios": "^1.7.2",
+    "dayjs": "^1.11.12",
+    "dayjs-plugin-utc": "^0.1.2",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "serve": "^14.2.3",
+    "vue": "^3.4.29",
+    "vue-router": "^4.3.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "vite": "^5.3.1",
+    "vite-plugin-vuetify": "^2.0.3",
+    "vuetify": "^3.6.13"
+  }
+}

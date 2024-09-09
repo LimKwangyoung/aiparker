@@ -1,0 +1,6 @@
+awscrt
+awsiot
+python-dotenv
+google-cloud-vision
+pillow
+

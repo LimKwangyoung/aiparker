@@ -1,0 +1,6 @@
+awscrt
+python-dotenv
+google-cloud-vision
+pillow
+awsiotsdk
+mysql-connector-python

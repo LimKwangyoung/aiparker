@@ -1,0 +1,42 @@
+# Build directories
+/build/
+build/
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Compiled files
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.out
+
+# IDE and Editor files
+/.vscode/
+/.idea/
+/.vs/
+*.swp
+*~
+*.user
+*.suo
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Boost related
+/deps/
+*.a
+*.lib
+
+/cert
+/aws-iot-device-sdk-python-v2
+.env
+nohup.out
+__pycache__

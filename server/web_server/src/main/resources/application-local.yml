@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: ${MYSQL_LOCAL_URL}
+    username: ${MYSQL_LOCAL_USERNAME}
+    password: ${MYSQL_LOCAL_PW}

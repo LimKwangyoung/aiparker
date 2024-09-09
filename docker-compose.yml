@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    restart: always
+    volumes:
+      - ../ssl-data/nginx:/etc/nginx/conf.d
+      - ../ssl-data/certbot/conf:/etc/letsencrypt
+      - ../ssl-data/certbot/www:/var/www/certbot
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - front_payment
+      - web_server
+    networks: 
+      - ssl
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PW}
+      MYSQL_DATABASE: aiparker
+      MYSQL_USER: ${MYSQL_DOCKER_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_DOCKER_PW}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ../mysql-data:/var/lib/mysql
+    networks:
+      - backend
+      - ssl
+
+  # front_monitoring:
+  #   build:
+  #     context: ./front/monitoring 
+  #   image: ${DOCKER_USERNAME}/front_monitoring:latest
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - frontend
+  #     - ssl
+
+  front_payment:
+    build:
+      context: ./front/payment
+    environment:
+      VITE_APP_S3_ACCESS_KEY_ID: ${S3_ACCESS}
+      VITE_APP_S3_SECRET_ACCESS_KEY: ${S3_ACCESS_SECRET}
+    image: ${DOCKER_USERNAME}/front_payment:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - frontend
+      - ssl
+
+  web_server:
+    build:
+      context: ./server/web_server
+    environment:
+      MYSQL_DOCKER_URL: ${MYSQL_DOCKER_URL}
+      MYSQL_DOCKER_USERNAME: ${MYSQL_DOCKER_USERNAME}
+      MYSQL_DOCKER_PW: ${MYSQL_DOCKER_PW}
+    image: ${DOCKER_USERNAME}/web_server:latest
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+      - ssl
+    depends_on:
+      - mysql
+
+  iot_server: 
+    build: 
+      context: ./server/iot_server
+    image: ${DOCKER_USERNAME}/iot_server:latest
+    ports:
+      - "8883:8883"
+    environment:
+      END_POINT: ${END_POINT}
+      CERT_FILE_PATH: /app/cert/A104.cert.pem
+      CA_FILE_PATH: /app/cert/root-CA.crt
+      PRI_KEY_FILE_PATH: /app/cert/A104.private.key
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: aiparker
+      MYSQL_USER: ${MYSQL_DOCKER_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_DOCKER_PW}
+    networks:
+      - backend
+      - ssl
+    depends_on:
+      - mysql
+
+  vision_parking: 
+    build: 
+      context: ./vision/parking
+    image: ${DOCKER_USERNAME}/vision_parking:latest
+    ports:
+      - "8888:8883"
+    environment:
+      END_POINT: ${END_POINT}
+      CERT_FILE_PATH: /app/cert/A104.cert.pem
+      CA_FILE_PATH: /app/cert/root-CA.crt
+      PRI_KEY_FILE_PATH: /app/cert/A104.private.key
+      MYSQL_HOST: mysql
+      MYSQL_DATABASE: aiparker
+      MYSQL_USER: ${MYSQL_DOCKER_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_DOCKER_PW}
+    networks:
+      - backend
+      - ssl
+    depends_on:
+      - mysql
+
+networks:
+  frontend:
+  backend:
+  ssl:
+
+volumes:
+  mysql-data:
